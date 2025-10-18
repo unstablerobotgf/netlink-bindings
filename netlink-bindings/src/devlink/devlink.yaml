@@ -746,23 +746,20 @@ attribute-sets:
         type: u64
       -
         name: flash-update-overwrite-mask
-        type: bitfield32
+        type: u32
         enum: flash-overwrite
-        enum-as-flags: true
       -
         name: reload-action
         type: u8
         enum: reload-action
       -
         name: reload-actions-performed
-        type: bitfield32
+        type: u32
         enum: reload-action
-        enum-as-flags: true
       -
         name: reload-limits
-        type: bitfield32
+        type: u32
         enum: reload-action
-        enum-as-flags: true
       -
         name: dev-stats
         type: nest
@@ -927,10 +924,8 @@ attribute-sets:
         enum: port-fn-opstate
       -
         name: caps
-        type: bitfield32
+        type: u32
         enum: port-fn-attr-cap
-        enum-as-flags: true
-
   -
     name: dl-dpipe-tables
     subset-of: devlink
@@ -2117,7 +2112,13 @@ operations:
             - flash-update-overwrite-mask
         reply:
           value: 58
-
+          attributes:
+            - bus-name
+            - dev-name
+            - flash-update-file-name
+            - flash-update-component
+            - flash-update-overwrite-mask
+            
     -
       name: trap-get
       doc: Get trap instances.

@@ -561,14 +561,14 @@ pub enum Devlink<'a> {
     PortExternal(u8),
     PortControllerNumber(u32),
     FlashUpdateStatusTimeout(u64),
-    #[doc = "Associated type: \"FlashOverwrite\" (1 bit per enumeration)"]
-    FlashUpdateOverwriteMask(PushBuiltinBitfield32),
+    #[doc = "Associated type: \"FlashOverwrite\" (enum)"]
+    FlashUpdateOverwriteMask(u32),
     #[doc = "Associated type: \"ReloadAction\" (enum)"]
     ReloadAction(u8),
-    #[doc = "Associated type: \"ReloadAction\" (1 bit per enumeration)"]
-    ReloadActionsPerformed(PushBuiltinBitfield32),
-    #[doc = "Associated type: \"ReloadAction\" (1 bit per enumeration)"]
-    ReloadLimits(PushBuiltinBitfield32),
+    #[doc = "Associated type: \"ReloadAction\" (enum)"]
+    ReloadActionsPerformed(u32),
+    #[doc = "Associated type: \"ReloadAction\" (enum)"]
+    ReloadLimits(u32),
     DevStats(IterableDlDevStats<'a>),
     ReloadStats(IterableDlReloadStats<'a>),
     #[doc = "Attribute may repeat multiple times (treat it as array)"]
@@ -2790,8 +2790,8 @@ impl<'a> IterableDevlink<'a> {
             self.buf.as_ptr() as usize,
         ))
     }
-    #[doc = "Associated type: \"FlashOverwrite\" (1 bit per enumeration)"]
-    pub fn get_flash_update_overwrite_mask(&self) -> Result<PushBuiltinBitfield32, ErrorContext> {
+    #[doc = "Associated type: \"FlashOverwrite\" (enum)"]
+    pub fn get_flash_update_overwrite_mask(&self) -> Result<u32, ErrorContext> {
         let mut iter = self.clone();
         iter.pos = 0;
         for attr in iter {
@@ -2822,8 +2822,8 @@ impl<'a> IterableDevlink<'a> {
             self.buf.as_ptr() as usize,
         ))
     }
-    #[doc = "Associated type: \"ReloadAction\" (1 bit per enumeration)"]
-    pub fn get_reload_actions_performed(&self) -> Result<PushBuiltinBitfield32, ErrorContext> {
+    #[doc = "Associated type: \"ReloadAction\" (enum)"]
+    pub fn get_reload_actions_performed(&self) -> Result<u32, ErrorContext> {
         let mut iter = self.clone();
         iter.pos = 0;
         for attr in iter {
@@ -2838,8 +2838,8 @@ impl<'a> IterableDevlink<'a> {
             self.buf.as_ptr() as usize,
         ))
     }
-    #[doc = "Associated type: \"ReloadAction\" (1 bit per enumeration)"]
-    pub fn get_reload_limits(&self) -> Result<PushBuiltinBitfield32, ErrorContext> {
+    #[doc = "Associated type: \"ReloadAction\" (enum)"]
+    pub fn get_reload_limits(&self) -> Result<u32, ErrorContext> {
         let mut iter = self.clone();
         iter.pos = 0;
         for attr in iter {
@@ -4154,7 +4154,7 @@ impl<'a> Iterator for IterableDevlink<'a> {
                     val
                 }),
                 152u16 => Devlink::FlashUpdateOverwriteMask({
-                    let res = PushBuiltinBitfield32::new_from_slice(next);
+                    let res = parse_u32(next);
                     let Some(val) = res else { break };
                     val
                 }),
@@ -4164,12 +4164,12 @@ impl<'a> Iterator for IterableDevlink<'a> {
                     val
                 }),
                 154u16 => Devlink::ReloadActionsPerformed({
-                    let res = PushBuiltinBitfield32::new_from_slice(next);
+                    let res = parse_u32(next);
                     let Some(val) = res else { break };
                     val
                 }),
                 155u16 => Devlink::ReloadLimits({
-                    let res = PushBuiltinBitfield32::new_from_slice(next);
+                    let res = parse_u32(next);
                     let Some(val) = res else { break };
                     val
                 }),
@@ -4537,9 +4537,7 @@ impl<'a> std::fmt::Debug for IterableDevlink<'_> {
                 }
                 Devlink::FlashUpdateOverwriteMask(val) => fmt.field(
                     "FlashUpdateOverwriteMask",
-                    &FormatFlags(val.into(), |val| {
-                        FlashOverwrite::from_value(val.trailing_zeros())
-                    }),
+                    &FormatEnum(val.into(), FlashOverwrite::from_value),
                 ),
                 Devlink::ReloadAction(val) => fmt.field(
                     "ReloadAction",
@@ -4547,15 +4545,11 @@ impl<'a> std::fmt::Debug for IterableDevlink<'_> {
                 ),
                 Devlink::ReloadActionsPerformed(val) => fmt.field(
                     "ReloadActionsPerformed",
-                    &FormatFlags(val.into(), |val| {
-                        ReloadAction::from_value(val.trailing_zeros())
-                    }),
+                    &FormatEnum(val.into(), ReloadAction::from_value),
                 ),
                 Devlink::ReloadLimits(val) => fmt.field(
                     "ReloadLimits",
-                    &FormatFlags(val.into(), |val| {
-                        ReloadAction::from_value(val.trailing_zeros())
-                    }),
+                    &FormatEnum(val.into(), ReloadAction::from_value),
                 ),
                 Devlink::DevStats(val) => fmt.field("DevStats", &val),
                 Devlink::ReloadStats(val) => fmt.field("ReloadStats", &val),
@@ -6668,8 +6662,8 @@ pub enum DlPortFunction<'a> {
     State(u8),
     #[doc = "Associated type: \"PortFnOpstate\" (enum)"]
     Opstate(u8),
-    #[doc = "Associated type: \"PortFnAttrCap\" (1 bit per enumeration)"]
-    Caps(PushBuiltinBitfield32),
+    #[doc = "Associated type: \"PortFnAttrCap\" (enum)"]
+    Caps(u32),
 }
 impl<'a> IterableDlPortFunction<'a> {
     pub fn get_hw_addr(&self) -> Result<&'a [u8], ErrorContext> {
@@ -6719,8 +6713,8 @@ impl<'a> IterableDlPortFunction<'a> {
             self.buf.as_ptr() as usize,
         ))
     }
-    #[doc = "Associated type: \"PortFnAttrCap\" (1 bit per enumeration)"]
-    pub fn get_caps(&self) -> Result<PushBuiltinBitfield32, ErrorContext> {
+    #[doc = "Associated type: \"PortFnAttrCap\" (enum)"]
+    pub fn get_caps(&self) -> Result<u32, ErrorContext> {
         let mut iter = self.clone();
         iter.pos = 0;
         for attr in iter {
@@ -6796,7 +6790,7 @@ impl<'a> Iterator for IterableDlPortFunction<'a> {
                     val
                 }),
                 4u16 => DlPortFunction::Caps({
-                    let res = PushBuiltinBitfield32::new_from_slice(next);
+                    let res = parse_u32(next);
                     let Some(val) = res else { break };
                     val
                 }),
@@ -6840,12 +6834,9 @@ impl<'a> std::fmt::Debug for IterableDlPortFunction<'_> {
                     "Opstate",
                     &FormatEnum(val.into(), PortFnOpstate::from_value),
                 ),
-                DlPortFunction::Caps(val) => fmt.field(
-                    "Caps",
-                    &FormatFlags(val.into(), |val| {
-                        PortFnAttrCap::from_value(val.trailing_zeros())
-                    }),
-                ),
+                DlPortFunction::Caps(val) => {
+                    fmt.field("Caps", &FormatEnum(val.into(), PortFnAttrCap::from_value))
+                }
             };
         }
         fmt.finish()
@@ -14041,10 +14032,10 @@ impl<Prev: Rec> PushDevlink<Prev> {
         self.as_rec_mut().extend(value.to_ne_bytes());
         self
     }
-    #[doc = "Associated type: \"FlashOverwrite\" (1 bit per enumeration)"]
-    pub fn push_flash_update_overwrite_mask(mut self, value: PushBuiltinBitfield32) -> Self {
-        push_header(self.as_rec_mut(), 152u16, value.as_slice().len() as u16);
-        self.as_rec_mut().extend(value.as_slice());
+    #[doc = "Associated type: \"FlashOverwrite\" (enum)"]
+    pub fn push_flash_update_overwrite_mask(mut self, value: u32) -> Self {
+        push_header(self.as_rec_mut(), 152u16, 4 as u16);
+        self.as_rec_mut().extend(value.to_ne_bytes());
         self
     }
     #[doc = "Associated type: \"ReloadAction\" (enum)"]
@@ -14053,16 +14044,16 @@ impl<Prev: Rec> PushDevlink<Prev> {
         self.as_rec_mut().extend(value.to_ne_bytes());
         self
     }
-    #[doc = "Associated type: \"ReloadAction\" (1 bit per enumeration)"]
-    pub fn push_reload_actions_performed(mut self, value: PushBuiltinBitfield32) -> Self {
-        push_header(self.as_rec_mut(), 154u16, value.as_slice().len() as u16);
-        self.as_rec_mut().extend(value.as_slice());
+    #[doc = "Associated type: \"ReloadAction\" (enum)"]
+    pub fn push_reload_actions_performed(mut self, value: u32) -> Self {
+        push_header(self.as_rec_mut(), 154u16, 4 as u16);
+        self.as_rec_mut().extend(value.to_ne_bytes());
         self
     }
-    #[doc = "Associated type: \"ReloadAction\" (1 bit per enumeration)"]
-    pub fn push_reload_limits(mut self, value: PushBuiltinBitfield32) -> Self {
-        push_header(self.as_rec_mut(), 155u16, value.as_slice().len() as u16);
-        self.as_rec_mut().extend(value.as_slice());
+    #[doc = "Associated type: \"ReloadAction\" (enum)"]
+    pub fn push_reload_limits(mut self, value: u32) -> Self {
+        push_header(self.as_rec_mut(), 155u16, 4 as u16);
+        self.as_rec_mut().extend(value.to_ne_bytes());
         self
     }
     pub fn nested_dev_stats(mut self) -> PushDlDevStats<Self> {
@@ -14575,10 +14566,10 @@ impl<Prev: Rec> PushDlPortFunction<Prev> {
         self.as_rec_mut().extend(value.to_ne_bytes());
         self
     }
-    #[doc = "Associated type: \"PortFnAttrCap\" (1 bit per enumeration)"]
-    pub fn push_caps(mut self, value: PushBuiltinBitfield32) -> Self {
-        push_header(self.as_rec_mut(), 4u16, value.as_slice().len() as u16);
-        self.as_rec_mut().extend(value.as_slice());
+    #[doc = "Associated type: \"PortFnAttrCap\" (enum)"]
+    pub fn push_caps(mut self, value: u32) -> Self {
+        push_header(self.as_rec_mut(), 4u16, 4 as u16);
+        self.as_rec_mut().extend(value.to_ne_bytes());
         self
     }
 }
@@ -33517,10 +33508,10 @@ impl<Prev: Rec> PushOpReloadDoRequest<Prev> {
         self.as_rec_mut().extend(value.to_ne_bytes());
         self
     }
-    #[doc = "Associated type: \"ReloadAction\" (1 bit per enumeration)"]
-    pub fn push_reload_limits(mut self, value: PushBuiltinBitfield32) -> Self {
-        push_header(self.as_rec_mut(), 155u16, value.as_slice().len() as u16);
-        self.as_rec_mut().extend(value.as_slice());
+    #[doc = "Associated type: \"ReloadAction\" (enum)"]
+    pub fn push_reload_limits(mut self, value: u32) -> Self {
+        push_header(self.as_rec_mut(), 155u16, 4 as u16);
+        self.as_rec_mut().extend(value.to_ne_bytes());
         self
     }
 }
@@ -33543,8 +33534,8 @@ pub enum OpReloadDoRequest<'a> {
     NetnsId(u32),
     #[doc = "Associated type: \"ReloadAction\" (enum)"]
     ReloadAction(u8),
-    #[doc = "Associated type: \"ReloadAction\" (1 bit per enumeration)"]
-    ReloadLimits(PushBuiltinBitfield32),
+    #[doc = "Associated type: \"ReloadAction\" (enum)"]
+    ReloadLimits(u32),
 }
 impl<'a> IterableOpReloadDoRequest<'a> {
     pub fn get_bus_name(&self) -> Result<&'a CStr, ErrorContext> {
@@ -33638,8 +33629,8 @@ impl<'a> IterableOpReloadDoRequest<'a> {
             self.buf.as_ptr() as usize,
         ))
     }
-    #[doc = "Associated type: \"ReloadAction\" (1 bit per enumeration)"]
-    pub fn get_reload_limits(&self) -> Result<PushBuiltinBitfield32, ErrorContext> {
+    #[doc = "Associated type: \"ReloadAction\" (enum)"]
+    pub fn get_reload_limits(&self) -> Result<u32, ErrorContext> {
         let mut iter = self.clone();
         iter.pos = 0;
         for attr in iter {
@@ -33724,7 +33715,7 @@ impl<'a> Iterator for IterableOpReloadDoRequest<'a> {
                     val
                 }),
                 155u16 => OpReloadDoRequest::ReloadLimits({
-                    let res = PushBuiltinBitfield32::new_from_slice(next);
+                    let res = parse_u32(next);
                     let Some(val) = res else { break };
                     val
                 }),
@@ -33771,9 +33762,7 @@ impl<'a> std::fmt::Debug for IterableOpReloadDoRequest<'_> {
                 ),
                 OpReloadDoRequest::ReloadLimits(val) => fmt.field(
                     "ReloadLimits",
-                    &FormatFlags(val.into(), |val| {
-                        ReloadAction::from_value(val.trailing_zeros())
-                    }),
+                    &FormatEnum(val.into(), ReloadAction::from_value),
                 ),
             };
         }
@@ -33919,10 +33908,10 @@ impl<Prev: Rec> PushOpReloadDoReply<Prev> {
         self.as_rec_mut().push(0);
         self
     }
-    #[doc = "Associated type: \"ReloadAction\" (1 bit per enumeration)"]
-    pub fn push_reload_actions_performed(mut self, value: PushBuiltinBitfield32) -> Self {
-        push_header(self.as_rec_mut(), 154u16, value.as_slice().len() as u16);
-        self.as_rec_mut().extend(value.as_slice());
+    #[doc = "Associated type: \"ReloadAction\" (enum)"]
+    pub fn push_reload_actions_performed(mut self, value: u32) -> Self {
+        push_header(self.as_rec_mut(), 154u16, 4 as u16);
+        self.as_rec_mut().extend(value.to_ne_bytes());
         self
     }
 }
@@ -33940,8 +33929,8 @@ impl<Prev: Rec> Drop for PushOpReloadDoReply<Prev> {
 pub enum OpReloadDoReply<'a> {
     BusName(&'a CStr),
     DevName(&'a CStr),
-    #[doc = "Associated type: \"ReloadAction\" (1 bit per enumeration)"]
-    ReloadActionsPerformed(PushBuiltinBitfield32),
+    #[doc = "Associated type: \"ReloadAction\" (enum)"]
+    ReloadActionsPerformed(u32),
 }
 impl<'a> IterableOpReloadDoReply<'a> {
     pub fn get_bus_name(&self) -> Result<&'a CStr, ErrorContext> {
@@ -33974,8 +33963,8 @@ impl<'a> IterableOpReloadDoReply<'a> {
             self.buf.as_ptr() as usize,
         ))
     }
-    #[doc = "Associated type: \"ReloadAction\" (1 bit per enumeration)"]
-    pub fn get_reload_actions_performed(&self) -> Result<PushBuiltinBitfield32, ErrorContext> {
+    #[doc = "Associated type: \"ReloadAction\" (enum)"]
+    pub fn get_reload_actions_performed(&self) -> Result<u32, ErrorContext> {
         let mut iter = self.clone();
         iter.pos = 0;
         for attr in iter {
@@ -34040,7 +34029,7 @@ impl<'a> Iterator for IterableOpReloadDoReply<'a> {
                     val
                 }),
                 154u16 => OpReloadDoReply::ReloadActionsPerformed({
-                    let res = PushBuiltinBitfield32::new_from_slice(next);
+                    let res = parse_u32(next);
                     let Some(val) = res else { break };
                     val
                 }),
@@ -34080,9 +34069,7 @@ impl<'a> std::fmt::Debug for IterableOpReloadDoReply<'_> {
                 OpReloadDoReply::DevName(val) => fmt.field("DevName", &val),
                 OpReloadDoReply::ReloadActionsPerformed(val) => fmt.field(
                     "ReloadActionsPerformed",
-                    &FormatFlags(val.into(), |val| {
-                        ReloadAction::from_value(val.trailing_zeros())
-                    }),
+                    &FormatEnum(val.into(), ReloadAction::from_value),
                 ),
             };
         }
@@ -46308,10 +46295,10 @@ impl<Prev: Rec> PushOpFlashUpdateDoRequest<Prev> {
         self.as_rec_mut().push(0);
         self
     }
-    #[doc = "Associated type: \"FlashOverwrite\" (1 bit per enumeration)"]
-    pub fn push_flash_update_overwrite_mask(mut self, value: PushBuiltinBitfield32) -> Self {
-        push_header(self.as_rec_mut(), 152u16, value.as_slice().len() as u16);
-        self.as_rec_mut().extend(value.as_slice());
+    #[doc = "Associated type: \"FlashOverwrite\" (enum)"]
+    pub fn push_flash_update_overwrite_mask(mut self, value: u32) -> Self {
+        push_header(self.as_rec_mut(), 152u16, 4 as u16);
+        self.as_rec_mut().extend(value.to_ne_bytes());
         self
     }
 }
@@ -46331,8 +46318,8 @@ pub enum OpFlashUpdateDoRequest<'a> {
     DevName(&'a CStr),
     FlashUpdateFileName(&'a CStr),
     FlashUpdateComponent(&'a CStr),
-    #[doc = "Associated type: \"FlashOverwrite\" (1 bit per enumeration)"]
-    FlashUpdateOverwriteMask(PushBuiltinBitfield32),
+    #[doc = "Associated type: \"FlashOverwrite\" (enum)"]
+    FlashUpdateOverwriteMask(u32),
 }
 impl<'a> IterableOpFlashUpdateDoRequest<'a> {
     pub fn get_bus_name(&self) -> Result<&'a CStr, ErrorContext> {
@@ -46395,8 +46382,8 @@ impl<'a> IterableOpFlashUpdateDoRequest<'a> {
             self.buf.as_ptr() as usize,
         ))
     }
-    #[doc = "Associated type: \"FlashOverwrite\" (1 bit per enumeration)"]
-    pub fn get_flash_update_overwrite_mask(&self) -> Result<PushBuiltinBitfield32, ErrorContext> {
+    #[doc = "Associated type: \"FlashOverwrite\" (enum)"]
+    pub fn get_flash_update_overwrite_mask(&self) -> Result<u32, ErrorContext> {
         let mut iter = self.clone();
         iter.pos = 0;
         for attr in iter {
@@ -46471,7 +46458,7 @@ impl<'a> Iterator for IterableOpFlashUpdateDoRequest<'a> {
                     val
                 }),
                 152u16 => OpFlashUpdateDoRequest::FlashUpdateOverwriteMask({
-                    let res = PushBuiltinBitfield32::new_from_slice(next);
+                    let res = parse_u32(next);
                     let Some(val) = res else { break };
                     val
                 }),
@@ -46517,9 +46504,7 @@ impl<'a> std::fmt::Debug for IterableOpFlashUpdateDoRequest<'_> {
                 }
                 OpFlashUpdateDoRequest::FlashUpdateOverwriteMask(val) => fmt.field(
                     "FlashUpdateOverwriteMask",
-                    &FormatFlags(val.into(), |val| {
-                        FlashOverwrite::from_value(val.trailing_zeros())
-                    }),
+                    &FormatEnum(val.into(), FlashOverwrite::from_value),
                 ),
             };
         }
@@ -46623,6 +46608,72 @@ impl<Prev: Rec> PushOpFlashUpdateDoReply<Prev> {
         }
         prev
     }
+    pub fn push_bus_name(mut self, value: &CStr) -> Self {
+        push_header(
+            self.as_rec_mut(),
+            1u16,
+            value.to_bytes_with_nul().len() as u16,
+        );
+        self.as_rec_mut().extend(value.to_bytes_with_nul());
+        self
+    }
+    pub fn push_bus_name_bytes(mut self, value: &[u8]) -> Self {
+        push_header(self.as_rec_mut(), 1u16, (value.len() + 1) as u16);
+        self.as_rec_mut().extend(value);
+        self.as_rec_mut().push(0);
+        self
+    }
+    pub fn push_dev_name(mut self, value: &CStr) -> Self {
+        push_header(
+            self.as_rec_mut(),
+            2u16,
+            value.to_bytes_with_nul().len() as u16,
+        );
+        self.as_rec_mut().extend(value.to_bytes_with_nul());
+        self
+    }
+    pub fn push_dev_name_bytes(mut self, value: &[u8]) -> Self {
+        push_header(self.as_rec_mut(), 2u16, (value.len() + 1) as u16);
+        self.as_rec_mut().extend(value);
+        self.as_rec_mut().push(0);
+        self
+    }
+    pub fn push_flash_update_file_name(mut self, value: &CStr) -> Self {
+        push_header(
+            self.as_rec_mut(),
+            122u16,
+            value.to_bytes_with_nul().len() as u16,
+        );
+        self.as_rec_mut().extend(value.to_bytes_with_nul());
+        self
+    }
+    pub fn push_flash_update_file_name_bytes(mut self, value: &[u8]) -> Self {
+        push_header(self.as_rec_mut(), 122u16, (value.len() + 1) as u16);
+        self.as_rec_mut().extend(value);
+        self.as_rec_mut().push(0);
+        self
+    }
+    pub fn push_flash_update_component(mut self, value: &CStr) -> Self {
+        push_header(
+            self.as_rec_mut(),
+            123u16,
+            value.to_bytes_with_nul().len() as u16,
+        );
+        self.as_rec_mut().extend(value.to_bytes_with_nul());
+        self
+    }
+    pub fn push_flash_update_component_bytes(mut self, value: &[u8]) -> Self {
+        push_header(self.as_rec_mut(), 123u16, (value.len() + 1) as u16);
+        self.as_rec_mut().extend(value);
+        self.as_rec_mut().push(0);
+        self
+    }
+    #[doc = "Associated type: \"FlashOverwrite\" (enum)"]
+    pub fn push_flash_update_overwrite_mask(mut self, value: u32) -> Self {
+        push_header(self.as_rec_mut(), 152u16, 4 as u16);
+        self.as_rec_mut().extend(value.to_ne_bytes());
+        self
+    }
 }
 impl<Prev: Rec> Drop for PushOpFlashUpdateDoReply<Prev> {
     fn drop(&mut self) {
@@ -46635,10 +46686,94 @@ impl<Prev: Rec> Drop for PushOpFlashUpdateDoReply<Prev> {
 }
 #[doc = "Flash update devlink instances."]
 #[derive(Clone)]
-pub enum OpFlashUpdateDoReply {}
-impl<'a> IterableOpFlashUpdateDoReply<'a> {}
-impl OpFlashUpdateDoReply {
-    pub fn new(buf: &'_ [u8]) -> IterableOpFlashUpdateDoReply<'_> {
+pub enum OpFlashUpdateDoReply<'a> {
+    BusName(&'a CStr),
+    DevName(&'a CStr),
+    FlashUpdateFileName(&'a CStr),
+    FlashUpdateComponent(&'a CStr),
+    #[doc = "Associated type: \"FlashOverwrite\" (enum)"]
+    FlashUpdateOverwriteMask(u32),
+}
+impl<'a> IterableOpFlashUpdateDoReply<'a> {
+    pub fn get_bus_name(&self) -> Result<&'a CStr, ErrorContext> {
+        let mut iter = self.clone();
+        iter.pos = 0;
+        for attr in iter {
+            if let OpFlashUpdateDoReply::BusName(val) = attr? {
+                return Ok(val);
+            }
+        }
+        Err(ErrorContext::new_missing(
+            "OpFlashUpdateDoReply",
+            "BusName",
+            self.orig_loc,
+            self.buf.as_ptr() as usize,
+        ))
+    }
+    pub fn get_dev_name(&self) -> Result<&'a CStr, ErrorContext> {
+        let mut iter = self.clone();
+        iter.pos = 0;
+        for attr in iter {
+            if let OpFlashUpdateDoReply::DevName(val) = attr? {
+                return Ok(val);
+            }
+        }
+        Err(ErrorContext::new_missing(
+            "OpFlashUpdateDoReply",
+            "DevName",
+            self.orig_loc,
+            self.buf.as_ptr() as usize,
+        ))
+    }
+    pub fn get_flash_update_file_name(&self) -> Result<&'a CStr, ErrorContext> {
+        let mut iter = self.clone();
+        iter.pos = 0;
+        for attr in iter {
+            if let OpFlashUpdateDoReply::FlashUpdateFileName(val) = attr? {
+                return Ok(val);
+            }
+        }
+        Err(ErrorContext::new_missing(
+            "OpFlashUpdateDoReply",
+            "FlashUpdateFileName",
+            self.orig_loc,
+            self.buf.as_ptr() as usize,
+        ))
+    }
+    pub fn get_flash_update_component(&self) -> Result<&'a CStr, ErrorContext> {
+        let mut iter = self.clone();
+        iter.pos = 0;
+        for attr in iter {
+            if let OpFlashUpdateDoReply::FlashUpdateComponent(val) = attr? {
+                return Ok(val);
+            }
+        }
+        Err(ErrorContext::new_missing(
+            "OpFlashUpdateDoReply",
+            "FlashUpdateComponent",
+            self.orig_loc,
+            self.buf.as_ptr() as usize,
+        ))
+    }
+    #[doc = "Associated type: \"FlashOverwrite\" (enum)"]
+    pub fn get_flash_update_overwrite_mask(&self) -> Result<u32, ErrorContext> {
+        let mut iter = self.clone();
+        iter.pos = 0;
+        for attr in iter {
+            if let OpFlashUpdateDoReply::FlashUpdateOverwriteMask(val) = attr? {
+                return Ok(val);
+            }
+        }
+        Err(ErrorContext::new_missing(
+            "OpFlashUpdateDoReply",
+            "FlashUpdateOverwriteMask",
+            self.orig_loc,
+            self.buf.as_ptr() as usize,
+        ))
+    }
+}
+impl<'a> OpFlashUpdateDoReply<'a> {
+    pub fn new(buf: &'a [u8]) -> IterableOpFlashUpdateDoReply<'a> {
         let (_header, attrs) = buf.split_at(buf.len().min(PushBuiltinNfgenmsg::len()));
         IterableOpFlashUpdateDoReply::with_loc(attrs, buf.as_ptr() as usize)
     }
@@ -46665,7 +46800,7 @@ impl<'a> IterableOpFlashUpdateDoReply<'a> {
     }
 }
 impl<'a> Iterator for IterableOpFlashUpdateDoReply<'a> {
-    type Item = Result<OpFlashUpdateDoReply, ErrorContext>;
+    type Item = Result<OpFlashUpdateDoReply<'a>, ErrorContext>;
     fn next(&mut self) -> Option<Self::Item> {
         if self.buf.len() == self.pos {
             return None;
@@ -46675,6 +46810,31 @@ impl<'a> Iterator for IterableOpFlashUpdateDoReply<'a> {
         while let Some((header, next)) = chop_header(self.buf, &mut self.pos) {
             r#type = Some(header.r#type);
             let res = match header.r#type {
+                1u16 => OpFlashUpdateDoReply::BusName({
+                    let res = CStr::from_bytes_with_nul(next).ok();
+                    let Some(val) = res else { break };
+                    val
+                }),
+                2u16 => OpFlashUpdateDoReply::DevName({
+                    let res = CStr::from_bytes_with_nul(next).ok();
+                    let Some(val) = res else { break };
+                    val
+                }),
+                122u16 => OpFlashUpdateDoReply::FlashUpdateFileName({
+                    let res = CStr::from_bytes_with_nul(next).ok();
+                    let Some(val) = res else { break };
+                    val
+                }),
+                123u16 => OpFlashUpdateDoReply::FlashUpdateComponent({
+                    let res = CStr::from_bytes_with_nul(next).ok();
+                    let Some(val) = res else { break };
+                    val
+                }),
+                152u16 => OpFlashUpdateDoReply::FlashUpdateOverwriteMask({
+                    let res = parse_u32(next);
+                    let Some(val) = res else { break };
+                    val
+                }),
                 n => {
                     if cfg!(any(test, feature = "deny-unknown-attrs")) {
                         break;
@@ -46693,7 +46853,7 @@ impl<'a> Iterator for IterableOpFlashUpdateDoReply<'a> {
         )))
     }
 }
-impl std::fmt::Debug for IterableOpFlashUpdateDoReply<'_> {
+impl<'a> std::fmt::Debug for IterableOpFlashUpdateDoReply<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut fmt = f.debug_struct("OpFlashUpdateDoReply");
         for attr in self.clone() {
@@ -46706,7 +46866,20 @@ impl std::fmt::Debug for IterableOpFlashUpdateDoReply<'_> {
                     return f.write_str(")");
                 }
             };
-            match attr {};
+            match attr {
+                OpFlashUpdateDoReply::BusName(val) => fmt.field("BusName", &val),
+                OpFlashUpdateDoReply::DevName(val) => fmt.field("DevName", &val),
+                OpFlashUpdateDoReply::FlashUpdateFileName(val) => {
+                    fmt.field("FlashUpdateFileName", &val)
+                }
+                OpFlashUpdateDoReply::FlashUpdateComponent(val) => {
+                    fmt.field("FlashUpdateComponent", &val)
+                }
+                OpFlashUpdateDoReply::FlashUpdateOverwriteMask(val) => fmt.field(
+                    "FlashUpdateOverwriteMask",
+                    &FormatEnum(val.into(), FlashOverwrite::from_value),
+                ),
+            };
         }
         fmt.finish()
     }
@@ -46725,6 +46898,51 @@ impl IterableOpFlashUpdateDoReply<'_> {
                 stack,
                 missing_type.and_then(|t| OpFlashUpdateDoReply::attr_from_type(t)),
             );
+        }
+        if cur > offset || cur + self.buf.len() < offset {
+            return (stack, None);
+        }
+        let mut attrs = self.clone();
+        let mut last_off = cur + attrs.pos;
+        while let Some(attr) = attrs.next() {
+            let Ok(attr) = attr else { break };
+            match attr {
+                OpFlashUpdateDoReply::BusName(val) => {
+                    if last_off == offset {
+                        stack.push(("BusName", last_off));
+                        break;
+                    }
+                }
+                OpFlashUpdateDoReply::DevName(val) => {
+                    if last_off == offset {
+                        stack.push(("DevName", last_off));
+                        break;
+                    }
+                }
+                OpFlashUpdateDoReply::FlashUpdateFileName(val) => {
+                    if last_off == offset {
+                        stack.push(("FlashUpdateFileName", last_off));
+                        break;
+                    }
+                }
+                OpFlashUpdateDoReply::FlashUpdateComponent(val) => {
+                    if last_off == offset {
+                        stack.push(("FlashUpdateComponent", last_off));
+                        break;
+                    }
+                }
+                OpFlashUpdateDoReply::FlashUpdateOverwriteMask(val) => {
+                    if last_off == offset {
+                        stack.push(("FlashUpdateOverwriteMask", last_off));
+                        break;
+                    }
+                }
+                _ => {}
+            };
+            last_off = cur + attrs.pos;
+        }
+        if !stack.is_empty() {
+            stack.push(("OpFlashUpdateDoReply", cur));
         }
         (stack, None)
     }

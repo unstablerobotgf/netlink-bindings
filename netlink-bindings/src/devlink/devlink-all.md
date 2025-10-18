@@ -735,8 +735,8 @@ PushOpPortSetDoRequest::new(&mut vec)
     // Associated type: "PortFnOpstate" (enum)
     .push_opstate(val) // u8
 
-    // Associated type: "PortFnAttrCap" (1 bit per enumeration)
-    .push_caps(val) // PushBuiltinBitfield32
+    // Associated type: "PortFnAttrCap" (enum)
+    .push_caps(val) // u32
   .end_nested()
   ;
 ```
@@ -785,8 +785,8 @@ for attr in iter {
           // Associated type: "PortFnOpstate" (enum)
           Opstate(val) => {}, // u8
 
-          // Associated type: "PortFnAttrCap" (1 bit per enumeration)
-          Caps(val) => {}, // PushBuiltinBitfield32
+          // Associated type: "PortFnAttrCap" (enum)
+          Caps(val) => {}, // u32
         }
       }
     },
@@ -3232,8 +3232,8 @@ PushOpReloadDoRequest::new(&mut vec)
   // Associated type: "ReloadAction" (enum)
   .push_reload_action(val) // u8
 
-  // Associated type: "ReloadAction" (1 bit per enumeration)
-  .push_reload_limits(val) // PushBuiltinBitfield32
+  // Associated type: "ReloadAction" (enum)
+  .push_reload_limits(val) // u32
   .push_netns_pid(val) // u32
   .push_netns_fd(val) // u32
   .push_netns_id(val) // u32
@@ -3246,8 +3246,8 @@ let attrs = OpReloadDoReply::new(buf);
 attrs.get_bus_name(); // &CStr
 attrs.get_dev_name(); // &CStr
 
-// Associated type: "ReloadAction" (1 bit per enumeration)
-attrs.get_reload_actions_performed(); // PushBuiltinBitfield32
+// Associated type: "ReloadAction" (enum)
+attrs.get_reload_actions_performed(); // u32
 ```
 
 ### Do (reply)
@@ -3259,8 +3259,8 @@ PushOpReloadDoReply::new(&mut vec)
   .push_dev_name(val) // &CStr
   .push_dev_name_bytes(val) // &[u8]
 
-  // Associated type: "ReloadAction" (1 bit per enumeration)
-  .push_reload_actions_performed(val) // PushBuiltinBitfield32
+  // Associated type: "ReloadAction" (enum)
+  .push_reload_actions_performed(val) // u32
   ;
 ```
 
@@ -3270,8 +3270,8 @@ let attrs = OpReloadDoReply::new(buf);
 attrs.get_bus_name(); // &CStr
 attrs.get_dev_name(); // &CStr
 
-// Associated type: "ReloadAction" (1 bit per enumeration)
-attrs.get_reload_actions_performed(); // PushBuiltinBitfield32
+// Associated type: "ReloadAction" (enum)
+attrs.get_reload_actions_performed(); // u32
 ```
 
 ## Low-level decoding
@@ -3288,8 +3288,8 @@ for attr in iter {
     // Associated type: "ReloadAction" (enum)
     ReloadAction(val) => {}, // u8
 
-    // Associated type: "ReloadAction" (1 bit per enumeration)
-    ReloadLimits(val) => {}, // PushBuiltinBitfield32
+    // Associated type: "ReloadAction" (enum)
+    ReloadLimits(val) => {}, // u32
     NetnsPid(val) => {}, // u32
     NetnsFd(val) => {}, // u32
     NetnsId(val) => {}, // u32
@@ -3306,8 +3306,8 @@ for attr in iter {
     BusName(val) => {}, // &CStr
     DevName(val) => {}, // &CStr
 
-    // Associated type: "ReloadAction" (1 bit per enumeration)
-    ReloadActionsPerformed(val) => {}, // PushBuiltinBitfield32
+    // Associated type: "ReloadAction" (enum)
+    ReloadActionsPerformed(val) => {}, // u32
   }
 }
 ```
@@ -4935,28 +4935,51 @@ PushOpFlashUpdateDoRequest::new(&mut vec)
   .push_flash_update_component(val) // &CStr
   .push_flash_update_component_bytes(val) // &[u8]
 
-  // Associated type: "FlashOverwrite" (1 bit per enumeration)
-  .push_flash_update_overwrite_mask(val) // PushBuiltinBitfield32
+  // Associated type: "FlashOverwrite" (enum)
+  .push_flash_update_overwrite_mask(val) // u32
   ;
 ```
 
 ```rust
 let attrs = OpFlashUpdateDoReply::new(buf);
 
-// No attributes
+attrs.get_bus_name(); // &CStr
+attrs.get_dev_name(); // &CStr
+attrs.get_flash_update_file_name(); // &CStr
+attrs.get_flash_update_component(); // &CStr
+
+// Associated type: "FlashOverwrite" (enum)
+attrs.get_flash_update_overwrite_mask(); // u32
 ```
 
 ### Do (reply)
 
 ```rust
 PushOpFlashUpdateDoReply::new(&mut vec)
+  .push_bus_name(val) // &CStr
+  .push_bus_name_bytes(val) // &[u8]
+  .push_dev_name(val) // &CStr
+  .push_dev_name_bytes(val) // &[u8]
+  .push_flash_update_file_name(val) // &CStr
+  .push_flash_update_file_name_bytes(val) // &[u8]
+  .push_flash_update_component(val) // &CStr
+  .push_flash_update_component_bytes(val) // &[u8]
+
+  // Associated type: "FlashOverwrite" (enum)
+  .push_flash_update_overwrite_mask(val) // u32
   ;
 ```
 
 ```rust
 let attrs = OpFlashUpdateDoReply::new(buf);
 
-// No attributes
+attrs.get_bus_name(); // &CStr
+attrs.get_dev_name(); // &CStr
+attrs.get_flash_update_file_name(); // &CStr
+attrs.get_flash_update_component(); // &CStr
+
+// Associated type: "FlashOverwrite" (enum)
+attrs.get_flash_update_overwrite_mask(); // u32
 ```
 
 ## Low-level decoding
@@ -4972,8 +4995,8 @@ for attr in iter {
     FlashUpdateFileName(val) => {}, // &CStr
     FlashUpdateComponent(val) => {}, // &CStr
 
-    // Associated type: "FlashOverwrite" (1 bit per enumeration)
-    FlashUpdateOverwriteMask(val) => {}, // PushBuiltinBitfield32
+    // Associated type: "FlashOverwrite" (enum)
+    FlashUpdateOverwriteMask(val) => {}, // u32
   }
 }
 ```
@@ -4982,7 +5005,17 @@ for attr in iter {
 
 ```rust
 let iter = OpFlashUpdateDoReply::new(buf);
-// No attributes
+for attr in iter {
+  match attr {
+    BusName(val) => {}, // &CStr
+    DevName(val) => {}, // &CStr
+    FlashUpdateFileName(val) => {}, // &CStr
+    FlashUpdateComponent(val) => {}, // &CStr
+
+    // Associated type: "FlashOverwrite" (enum)
+    FlashUpdateOverwriteMask(val) => {}, // u32
+  }
+}
 ```
 
 # Operation "trap-get"
